@@ -1,0 +1,1 @@
+conninfo = "postgresql://postgres:postgres@localhost:5432/postgres"
