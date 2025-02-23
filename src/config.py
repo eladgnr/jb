@@ -1,1 +1,1 @@
-conninfo = "postgresql://postgres:postgres@localhost:5432/postgres"
+con_info = "postgresql://postgres:postgres@localhost:5432/postgres"

@@ -1,4 +1,9 @@
 import psycopg as pg
 
-from src.config import conninfo
-db_conn = pg.connect("dbname=postgres user=postgres password=postgres")
+
+# check if connection to db is ok, if so print ok
+from src.config import con_info
+db_conn = pg.connect("dbname=nw user=admin password=1234")
+
+# create new database name test
+db_conn.execute("CREATE DATABASE test")
