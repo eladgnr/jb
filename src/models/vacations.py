@@ -1,7 +1,5 @@
-from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from sqlalchemy import Column, Integer, String, Numeric, Date, Sequence, ForeignKey
+from .base import Base  # Import Base from base.py
 
 
 class Vacation(Base):

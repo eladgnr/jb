@@ -1,7 +1,5 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from sqlalchemy import Column, Integer, String, Sequence
+from .base import Base  # Import Base from base.py
 
 
 class Country(Base):

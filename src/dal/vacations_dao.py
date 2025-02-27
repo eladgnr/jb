@@ -1,4 +1,4 @@
-from db_conn import get_connection
+from .db_conn import get_connection  # Fixed import
 
 
 def create_vacations_table():

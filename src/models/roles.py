@@ -1,7 +1,5 @@
 from sqlalchemy import Column, Integer, String, Sequence
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from .base import Base  # Import Base from base.py
 
 
 class Role(Base):
