@@ -1,0 +1,6 @@
+# reqs for Elad Project
+Flask
+psycopg2-binary
+SQLAlchemy
+pytest
+unittest

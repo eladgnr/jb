@@ -1,21 +1,38 @@
-from .db_conn import get_connection  # Fixed import
+import psycopg2
+from src.dal.db_conn import get_connection
 
 
-def create_roles_table():
+def get_role_by_id(role_id):
+    """Fetch a role by its ID from the database."""
     conn = get_connection()
-    if conn is not None:
+    if conn:
         cur = conn.cursor()
-        cur.execute("""
-            CREATE TABLE roles (
-                job_id SERIAL PRIMARY KEY,
-                role_name VARCHAR(50) UNIQUE NOT NULL
-            )
-        """)
-        cur.execute("INSERT INTO roles (role_name) VALUES ('user'), ('admin')")
-        conn.commit()
+        cur.execute("SELECT * FROM roles WHERE job_id = %s", (role_id,))
+        role = cur.fetchone()
         cur.close()
         conn.close()
+        return role  # Returns None if no role found
+    return None
 
 
-if __name__ == "__main__":
-    create_roles_table()
+def create_role(role_name):
+    """Insert a new role into the database, handling duplicates."""
+    conn = get_connection()
+    if conn:
+        cur = conn.cursor()
+        try:
+            cur.execute("""
+                INSERT INTO roles (role_name)
+                VALUES (%s)
+                RETURNING job_id;
+            """, (role_name,))
+            role_id = cur.fetchone()[0]
+            conn.commit()
+            return role_id
+        except psycopg2.errors.UniqueViolation:
+            conn.rollback()  # Prevent database locks
+            # Ensure test catches this
+            raise ValueError(f"Role '{role_name}' already exists.")
+        finally:
+            cur.close()
+            conn.close()

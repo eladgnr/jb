@@ -1,5 +1,5 @@
-from dal.vacations_dao import get_all_vacations, create_vacation
-from models.vacations import Vacation
+from ..dal.vacations_dao import get_all_vacations, create_vacation  # Fixed import
+from ..models.vacations import Vacation  # Fixed import
 
 
 def list_vacations():

@@ -1,5 +1,5 @@
-from dal.likes_dao import add_like
-from models.likes import Like
+from ..dal.likes_dao import add_like  # Fixed import
+from ..models.likes import Like  # Fixed import
 
 
 def like_vacation(user_id, vacation_id):

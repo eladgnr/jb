@@ -1,4 +1,4 @@
-from .db_conn import get_connection  # Fixed import
+from src.dal.db_conn import get_connection  # Works with direct execution
 
 
 def create_likes_table():
@@ -6,7 +6,7 @@ def create_likes_table():
     if conn is not None:
         cur = conn.cursor()
         cur.execute("""
-            CREATE TABLE likes (
+            CREATE TABLE IF NOT EXISTS likes (
                 user_id INTEGER REFERENCES users(user_id),
                 vacation_id INTEGER REFERENCES vacations(vacation_id),
                 PRIMARY KEY (user_id, vacation_id)
@@ -15,6 +15,21 @@ def create_likes_table():
         conn.commit()
         cur.close()
         conn.close()
+
+
+def add_like(user_id, vacation_id):
+    conn = get_connection()
+    if conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                "INSERT INTO likes (user_id, vacation_id) VALUES (%s, %s)",
+                (user_id, vacation_id)
+            )
+            conn.commit()
+        finally:
+            cur.close()
+            conn.close()
 
 
 if __name__ == "__main__":

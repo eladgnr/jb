@@ -1,4 +1,17 @@
-from .db_conn import get_connection  # Fixed import
+from src.dal.db_conn import get_connection  # Works with direct execution
+
+
+def get_user_by_id(user_id):
+    """Fetch a user by ID from the database."""
+    conn = get_connection()
+    if conn is not None:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
+        user = cur.fetchone()
+        cur.close()
+        conn.close()
+        return user  # Returns None if no user found
+    return None
 
 
 def create_users_table():
@@ -6,7 +19,7 @@ def create_users_table():
     if conn is not None:
         cur = conn.cursor()
         cur.execute("""
-            CREATE TABLE users (
+            CREATE TABLE IF NOT EXISTS users (
                 user_id SERIAL PRIMARY KEY,
                 first_name VARCHAR(50) NOT NULL,
                 last_name VARCHAR(50) NOT NULL,
@@ -16,14 +29,37 @@ def create_users_table():
             )
         """)
         cur.execute("""
-            INSERT INTO users (first_name, last_name, email, password, job_id) 
+            INSERT INTO users (first_name, last_name, email, password, job_id)
             VALUES 
-            ('John', 'Doe', 'john.doe@example.com', 'password123', 1),
-            ('Jane', 'Smith', 'jane.smith@example.com', 'password123', 2)
+            ('John', 'Doe', 'john.doe@example.com', 'pass123', 1),
+            ('Jane', 'Smith', 'jane.smith@example.com', 'pass123', 2),
+            ('Alice', 'Brown', 'alice.brown@example.com', 'pass123', 1),
+            ('Bob', 'Johnson', 'bob.johnson@example.com', 'pass123', 2),
+            ('Eve', 'Davis', 'eve.davis@example.com', 'pass123', 1)
+            ON CONFLICT (email) DO NOTHING
         """)
         conn.commit()
         cur.close()
         conn.close()
+
+
+def create_user(first_name, last_name, email, password, job_id):
+    """Insert a new user into the users table."""
+    conn = get_connection()
+    if conn is not None:
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO users (first_name, last_name, email, password, job_id)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING user_id;
+        """, (first_name, last_name, email, password, job_id))
+
+        user_id = cur.fetchone()[0]
+        conn.commit()
+        cur.close()
+        conn.close()
+        return user_id  # Return the new user ID
+    return None
 
 
 if __name__ == "__main__":

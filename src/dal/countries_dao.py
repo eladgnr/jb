@@ -1,4 +1,4 @@
-from .db_conn import get_connection  # Fixed import
+from src.dal.db_conn import get_connection  # Works with direct execution
 
 
 def create_countries_table():
@@ -6,25 +6,26 @@ def create_countries_table():
     if conn is not None:
         cur = conn.cursor()
         cur.execute("""
-            CREATE TABLE countries (
+            CREATE TABLE IF NOT EXISTS countries (
                 country_id SERIAL PRIMARY KEY,
-                country_name VARCHAR(50) NOT NULL,
-                description VARCHAR(255)
+                country_name VARCHAR(50) UNIQUE NOT NULL,
+                description VARCHAR(255) NOT NULL
             )
         """)
         cur.execute("""
-            INSERT INTO countries (country_name, description) 
+            INSERT INTO countries (country_name, description)
             VALUES 
-            ('Australia', 'A land of kangaroos and vast deserts.'),
-            ('Brazil', 'Famous for its carnival and vibrant culture.'),
-            ('Canada', 'Known for its natural beauty and maple syrup.'),
-            ('China', 'Home to the Great Wall and rich history.'),
-            ('France', 'Land of wine, cheese, and the Eiffel Tower.'),
-            ('Germany', 'Renowned for its engineering and Oktoberfest.'),
-            ('India', 'Diverse culture and the Taj Mahal.'),
-            ('Japan', 'Known for technology and cherry blossoms.'),
-            ('South Africa', 'Famous for its wildlife and Nelson Mandela.'),
-            ('United States', 'Land of opportunities and diverse culture.')
+            ('Australia', 'Sunny beaches and kangaroos.'),
+            ('Brazil', 'Home of the Amazon rainforest.'),
+            ('Canada', 'Maple syrup and vast wilderness.'),
+            ('China', 'Great Wall and rich history.'),
+            ('France', 'Eiffel Tower and fine wine.'),
+            ('Germany', 'Engineering and Oktoberfest.'),
+            ('India', 'Diverse culture and Taj Mahal.'),
+            ('Japan', 'Technology and cherry blossoms.'),
+            ('South Africa', 'Wildlife and beautiful landscapes.'),
+            ('United States', 'Big cities and national parks.')
+            ON CONFLICT (country_name) DO NOTHING
         """)
         conn.commit()
         cur.close()
