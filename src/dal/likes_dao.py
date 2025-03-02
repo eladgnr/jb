@@ -1,6 +1,19 @@
 from src.dal.db_conn import get_connection  # Works with direct execution
 
 
+def get_all_likes():
+    """Fetch all likes from the database."""
+    conn = get_connection()
+    if conn is not None:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM likes")
+        likes = cur.fetchall()
+        cur.close()
+        conn.close()
+        return likes
+    return []
+
+
 def create_likes_table():
     conn = get_connection()
     if conn is not None:

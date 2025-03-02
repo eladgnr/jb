@@ -2,6 +2,19 @@ import psycopg2
 from src.dal.db_conn import get_connection
 
 
+def get_all_roles():
+    """Fetch all roles from the database."""
+    conn = get_connection()
+    if conn is not None:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM roles")
+        roles = cur.fetchall()
+        cur.close()
+        conn.close()
+        return roles
+    return []
+
+
 def get_role_by_id(role_id):
     """Fetch a role by its ID from the database."""
     conn = get_connection()

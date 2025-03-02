@@ -1,6 +1,19 @@
 from src.dal.db_conn import get_connection  # Works with direct execution
 
 
+def get_all_countries():
+    """Fetch all countries from the database."""
+    conn = get_connection()
+    if conn is not None:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM countries")
+        countries = cur.fetchall()
+        cur.close()
+        conn.close()
+        return countries
+    return []
+
+
 def create_countries_table():
     conn = get_connection()
     if conn is not None:
