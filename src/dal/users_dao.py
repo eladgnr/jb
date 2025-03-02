@@ -14,7 +14,21 @@ def get_user_by_id(user_id):
     return None
 
 
+def get_all_users():
+    """Fetch all users from the database."""
+    conn = get_connection()
+    if conn is not None:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users")  # Fetch all user records
+        users = cur.fetchall()
+        cur.close()
+        conn.close()
+        return users  # Returns a list of tuples
+    return []
+
+
 def create_users_table():
+    """Create the users table and insert default users."""
     conn = get_connection()
     if conn is not None:
         cur = conn.cursor()

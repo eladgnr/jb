@@ -1,1 +1,21 @@
-# gitignore files
+# Ignore the virtual environment
+venv/
+
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore database files (if any)
+*.db
+*.sqlite3
+
+# Ignore log files and temp files
+*.log
+*.tmp
+
+# Ignore VS Code and PyCharm settings
+.vscode/
+.idea/
+
+# Ignore pytest cache
+.pytest_cache/
