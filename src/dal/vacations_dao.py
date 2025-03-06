@@ -7,8 +7,39 @@ def create_vacations_table():
     conn = get_connection()
     if conn is not None:
         cur = conn.cursor()
+
+        # Drop countries table if it exists
+        cur.execute("DROP TABLE IF EXISTS countries CASCADE")
+
+        # Recreate countries table
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS vacations (
+            CREATE TABLE countries (
+                country_id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL
+            )
+        """)
+
+        # Insert countries (Required before inserting vacations)
+        cur.execute("""
+            INSERT INTO countries (country_id, name) VALUES
+            (1, 'Israel'),
+            (2, 'Brazil'),
+            (3, 'Canada'),
+            (4, 'China'),
+            (5, 'France'),
+            (6, 'Germany'),
+            (7, 'India'),
+            (8, 'Japan'),
+            (9, 'South Africa'),
+            (10, 'United States')
+            ON CONFLICT DO NOTHING
+        """)
+
+        # Drop and recreate vacations table
+        cur.execute("DROP TABLE IF EXISTS vacations CASCADE")
+
+        cur.execute("""
+            CREATE TABLE vacations (
                 vacation_id SERIAL PRIMARY KEY,
                 country_id INTEGER REFERENCES countries(country_id),
                 description VARCHAR(255) NOT NULL,
@@ -18,10 +49,12 @@ def create_vacations_table():
                 image_name VARCHAR(100) NOT NULL
             )
         """)
+
+        # Insert sample vacations
         cur.execute("""
             INSERT INTO vacations (country_id, description, start_date, end_date, price, image_name)
             VALUES
-            (1, 'Explore the Great Barrier Reef.', '2024-06-01', '2024-06-10', 2500, 'sydney.png'),
+            (1, 'Amazing Place where most of the year is summer.', '2024-06-01', '2024-06-10', 2500, 'Jerusalem.png'),
             (2, 'Visit the Amazon Rainforest.', '2024-07-05', '2024-07-15', 2000, 'amazon.png'),
             (3, 'Ski trip to Whistler, Canada.', '2024-12-10', '2024-12-20', 3000, 'whistler.png'),
             (4, 'Hike the Great Wall of China.', '2024-09-01', '2024-09-10', 1800, 'greatwall.png'),
@@ -33,6 +66,7 @@ def create_vacations_table():
             (10, 'Road trip in the USA.', '2024-06-10', '2024-07-10', 4000, 'route66.png')
             ON CONFLICT DO NOTHING
         """)
+
         conn.commit()
         cur.close()
         conn.close()
@@ -52,22 +86,22 @@ def get_all_vacations():
     return []
 
 
-def create_vacation(destination, start_date, end_date, user_id):
+def create_vacation(country_id, description, start_date, end_date, price, image_name):
     """Insert a new vacation into the database."""
     conn = get_connection()
     if conn is not None:
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO vacations (destination, start_date, end_date, user_id)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO vacations (country_id, description, start_date, end_date, price, image_name)
+            VALUES (%s, %s, %s, %s, %s, %s)
             RETURNING vacation_id;
-        """, (destination, start_date, end_date, user_id))
+        """, (country_id, description, start_date, end_date, price, image_name))
 
         vacation_id = cur.fetchone()[0]
         conn.commit()
         cur.close()
         conn.close()
-        return vacation_id  # Return the new vacation ID
+        return vacation_id
     return None
 
 

@@ -1,8 +1,10 @@
-from src.dal.vacations_dao import get_all_vacations
+from src.dal.vacations_dao import get_all_vacations, create_vacations_table
 from src.dal.users_dao import get_all_users
 from src.dal.likes_dao import get_all_likes
 from src.dal.countries_dao import get_all_countries
 from src.dal.roles_dao import get_all_roles
+import pytest
+import sys
 
 
 def show_vacations():
@@ -23,7 +25,6 @@ def show_users():
         print("\nUsers List:")
         print("=" * 100)
         for user in users:
-            # Corrected Role ID index
             print(
                 f"ID: {user[0]} | Name: {user[1]} {user[2]} | Email: {user[3]} | Role ID: {user[5]}")
     else:
@@ -65,6 +66,12 @@ def show_roles():
 
 
 if __name__ == "__main__":
+    print("Recreating vacations table...")
+    create_vacations_table()
+
+    print("\nRunning tests...\n")
+    sys.exit(pytest.main(["-v", "-s", "tests/test_vacations.py"]))
+
     show_vacations()
     show_users()
     show_likes()
