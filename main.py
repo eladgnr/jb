@@ -4,6 +4,7 @@ from src.dal.likes_dao import get_all_likes
 from src.dal.countries_dao import get_all_countries
 from src.dal.roles_dao import get_all_roles
 
+import time
 import pytest
 import sys
 
@@ -80,8 +81,10 @@ if __name__ == "__main__":
     if exit_code != 0:
         sys.exit(exit_code)  # Stop execution if tests fail
 
-    show_vacations()
     show_users()
     show_likes()
     show_countries()
     show_roles()
+    show_vacations()
+
+    print("\nAll tests passed!")

@@ -1,6 +1,5 @@
 # Ensure DB connection is properly imported
 from src.dal.db_conn import get_connection
-from src.dal.db_conn import get_connection  # Works with direct execution
 
 
 def create_vacations_table():
@@ -8,10 +7,12 @@ def create_vacations_table():
     if conn is not None:
         cur = conn.cursor()
 
-        # Drop countries table if it exists
+        print("Dropping vacations and countries tables...")
+
+        cur.execute("DROP TABLE IF EXISTS vacations CASCADE")
         cur.execute("DROP TABLE IF EXISTS countries CASCADE")
 
-        # Recreate countries table
+        print("Creating countries table...")
         cur.execute("""
             CREATE TABLE countries (
                 country_id SERIAL PRIMARY KEY,
@@ -19,7 +20,7 @@ def create_vacations_table():
             )
         """)
 
-        # Insert countries (Required before inserting vacations)
+        print("Inserting country data...")
         cur.execute("""
             INSERT INTO countries (country_id, name) VALUES
             (1, 'Israel'),
@@ -32,12 +33,9 @@ def create_vacations_table():
             (8, 'Japan'),
             (9, 'South Africa'),
             (10, 'United States')
-            ON CONFLICT DO NOTHING
         """)
 
-        # Drop and recreate vacations table
-        cur.execute("DROP TABLE IF EXISTS vacations CASCADE")
-
+        print("Creating vacations table...")
         cur.execute("""
             CREATE TABLE vacations (
                 vacation_id SERIAL PRIMARY KEY,
@@ -50,7 +48,7 @@ def create_vacations_table():
             )
         """)
 
-        # Insert sample vacations
+        print("Inserting vacation data...")
         cur.execute("""
             INSERT INTO vacations (country_id, description, start_date, end_date, price, image_name)
             VALUES
@@ -64,10 +62,15 @@ def create_vacations_table():
             (8, 'Cherry blossom festival.', '2024-03-15', '2024-03-25', 2000, 'tokyo.png'),
             (9, 'Safari in South Africa.', '2024-08-10', '2024-08-20', 3200, 'kruger.png'),
             (10, 'Road trip in the USA.', '2024-06-10', '2024-07-10', 4000, 'route66.png')
-            ON CONFLICT DO NOTHING
         """)
 
         conn.commit()
+        print("Committed all changes to the database.")
+
+        cur.execute("SELECT COUNT(*) FROM vacations;")
+        count = cur.fetchone()[0]
+        print(f"Total vacations in database after insert: {count}")
+
         cur.close()
         conn.close()
 
@@ -77,12 +80,13 @@ def get_all_vacations():
     conn = get_connection()
     if conn is not None:
         cur = conn.cursor()
-        # Assuming 'vacations' is the table name
         cur.execute("SELECT * FROM vacations")
         vacations = cur.fetchall()
         cur.close()
         conn.close()
-        return vacations  # Returns a list of vacation records
+
+        print(f"🔎 get_all_vacations() fetched {len(vacations)} records.")
+        return vacations
     return []
 
 
