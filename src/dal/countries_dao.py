@@ -28,7 +28,7 @@ def create_countries_table():
         cur.execute("""
             INSERT INTO countries (country_name, description)
             VALUES 
-            ('Australia', 'Sunny beaches and kangaroos.'),
+            ('Israel', 'Sunny beaches.'),
             ('Brazil', 'Home of the Amazon rainforest.'),
             ('Canada', 'Maple syrup and vast wilderness.'),
             ('China', 'Great Wall and rich history.'),

@@ -3,6 +3,7 @@ from src.dal.users_dao import get_all_users, create_users_table
 from src.dal.likes_dao import get_all_likes
 from src.dal.countries_dao import get_all_countries
 from src.dal.roles_dao import get_all_roles
+
 import pytest
 import sys
 

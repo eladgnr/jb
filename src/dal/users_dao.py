@@ -28,12 +28,16 @@ def get_all_users():
 
 
 def create_users_table():
-    """Create the users table and insert default users."""
+    """Drop and recreate the users table before inserting default users."""
     conn = get_connection()
     if conn is not None:
         cur = conn.cursor()
+
+        # Drop and recreate table (WARNING: Deletes all users permanently)
+        cur.execute("DROP TABLE IF EXISTS users CASCADE")
+
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE users (
                 user_id SERIAL PRIMARY KEY,
                 first_name VARCHAR(50) NOT NULL,
                 last_name VARCHAR(50) NOT NULL,
@@ -42,16 +46,18 @@ def create_users_table():
                 job_id INTEGER REFERENCES roles(job_id)
             )
         """)
+
         cur.execute("""
             INSERT INTO users (first_name, last_name, email, password, job_id)
             VALUES 
-            ('John', 'Doe', 'john.doe@example.com', 'pass123', 1),
-            ('Jane', 'Smith', 'jane.smith@example.com', 'pass123', 2),
-            ('Alice', 'Brown', 'alice.brown@example.com', 'pass123', 1),
-            ('Bob', 'Johnson', 'bob.johnson@example.com', 'pass123', 2),
-            ('Eve', 'Davis', 'eve.davis@example.com', 'pass123', 1)
+            ('Axl', 'Rose', 'axl.rose@example.com', 'pass123', 1),
+            ('Steve', 'Vai', 'steve.vai@example.com', 'pass123', 2),
+            ('Eric', 'Clapton', 'eric.clapton@example.com', 'pass123', 1),
+            ('David', 'Gilmour', 'david.gilmoure@example.com', 'pass123', 2),
+            ('Elton', 'John', 'elton.john@example.com', 'pass123', 1)
             ON CONFLICT (email) DO NOTHING
         """)
+
         conn.commit()
         cur.close()
         conn.close()
