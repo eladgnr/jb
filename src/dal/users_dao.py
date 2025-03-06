@@ -10,7 +10,7 @@ def get_user_by_id(user_id):
         user = cur.fetchone()
         cur.close()
         conn.close()
-        return user  # Returns None if no user found
+        return dict(zip(["user_id", "first_name", "last_name", "email", "password", "job_id"], user)) if user else None
     return None
 
 
@@ -57,11 +57,22 @@ def create_users_table():
         conn.close()
 
 
-def create_user(first_name, last_name, email, password, job_id):
-    """Insert a new user into the users table."""
+def create_user(admin_id, first_name, last_name, email, password, job_id):
+    """Only allow admin users to create new users."""
     conn = get_connection()
     if conn is not None:
         cur = conn.cursor()
+
+        # Check if the caller is an admin
+        cur.execute("SELECT job_id FROM users WHERE user_id = %s", (admin_id,))
+        admin_role = cur.fetchone()
+
+        if not admin_role or admin_role[0] != 2:
+            cur.close()
+            conn.close()
+            raise PermissionError("Only admin users can create new users.")
+
+        # Proceed with user creation
         cur.execute("""
             INSERT INTO users (first_name, last_name, email, password, job_id)
             VALUES (%s, %s, %s, %s, %s)

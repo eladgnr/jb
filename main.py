@@ -1,5 +1,5 @@
 from src.dal.vacations_dao import get_all_vacations, create_vacations_table
-from src.dal.users_dao import get_all_users
+from src.dal.users_dao import get_all_users, create_users_table
 from src.dal.likes_dao import get_all_likes
 from src.dal.countries_dao import get_all_countries
 from src.dal.roles_dao import get_all_roles
@@ -69,8 +69,15 @@ if __name__ == "__main__":
     print("Recreating vacations table...")
     create_vacations_table()
 
+    print("Recreating users table...")
+    create_users_table()
+
     print("\nRunning tests...\n")
-    sys.exit(pytest.main(["-v", "-s", "tests/test_vacations.py"]))
+    exit_code = pytest.main(
+        ["-v", "-s", "tests/test_vacations.py", "tests/test_users.py"])
+
+    if exit_code != 0:
+        sys.exit(exit_code)  # Stop execution if tests fail
 
     show_vacations()
     show_users()
