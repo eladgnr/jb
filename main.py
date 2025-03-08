@@ -81,6 +81,10 @@ if __name__ == "__main__":
     if exit_code != 0:
         sys.exit(exit_code)  # Stop execution if tests fail
 
+    # Recreate vacations table again to restore data after tests
+    print("Restoring vacations data...")
+    create_vacations_table()
+
     show_users()
     show_likes()
     show_countries()
