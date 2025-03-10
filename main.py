@@ -3,92 +3,104 @@ from src.dal.users_dao import get_all_users, create_users_table
 from src.dal.likes_dao import get_all_likes
 from src.dal.countries_dao import get_all_countries
 from src.dal.roles_dao import get_all_roles
+from src.dal.db_conn import get_connection
 
 import time
 import pytest
 import sys
+import psycopg2
+import os
 
 
-def show_vacations():
-    vacations = get_all_vacations()
-    if vacations:
-        print("\nVacations List:")
-        print("=" * 100)
-        for vacation in vacations:
-            print(
-                f"ID: {vacation[0]} | Country ID: {vacation[1]} | {vacation[2]} | {vacation[3]} to {vacation[4]} | Price: ${vacation[5]} | Image: {vacation[6]}")
-    else:
-        print("No vacations found.")
+def recreate_test_db():
+    """Drop and recreate the test database."""
+    conn = psycopg2.connect(
+        dbname="postgres",  # Connect to the default system database first
+        user="admin",  # Use the same credentials as db_conn.py
+        password="1234",
+        host="localhost",
+        port="5432"
+    )
+    conn.autocommit = True
+    cursor = conn.cursor()
+
+    cursor.execute("DROP DATABASE IF EXISTS test_db;")
+    cursor.execute("CREATE DATABASE test_db;")
+    # Ensure admin has access
+    cursor.execute("GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;")
+
+    cursor.close()
+    conn.close()
+    print("Test database recreated successfully.")
 
 
-def show_users():
+def setup_test_tables():
+    """Create test tables in test_db."""
+    conn = get_connection()  # Connect to test_db
+    cursor = conn.cursor()
+
+    create_users_table()
+    create_vacations_table()
+
+    cursor.close()
+    conn.close()
+    print("Test tables created successfully.")
+
+
+def show_test_data():
+    """Display test data after test execution."""
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    print("\nUsers:")
     users = get_all_users()
-    if users:
-        print("\nUsers List:")
-        print("=" * 100)
-        for user in users:
-            print(
-                f"ID: {user[0]} | Name: {user[1]} {user[2]} | Email: {user[3]} | Role ID: {user[5]}")
-    else:
-        print("No users found.")
+    for user in users:
+        print(user)
 
-
-def show_likes():
+    print("\nLikes:")
     likes = get_all_likes()
-    if likes:
-        print("\nLikes List:")
-        print("=" * 100)
-        for like in likes:
-            print(
-                f"ID: {like[0]} | User ID: {like[1]} | Vacation ID: {like[2]}")
-    else:
-        print("No likes found.")
+    for like in likes:
+        print(like)
 
-
-def show_countries():
+    print("\nCountries:")
     countries = get_all_countries()
-    if countries:
-        print("\nCountries List:")
-        print("=" * 100)
-        for country in countries:
-            print(f"ID: {country[0]} | Name: {country[1]}")
-    else:
-        print("No countries found.")
+    for country in countries:
+        print(country)
 
-
-def show_roles():
+    print("\nRoles:")
     roles = get_all_roles()
-    if roles:
-        print("\nRoles List:")
-        print("=" * 100)
-        for role in roles:
-            print(f"ID: {role[0]} | Role Name: {role[1]}")
-    else:
-        print("No roles found.")
+    for role in roles:
+        print(role)
+
+    print("\nVacations:")
+    vacations = get_all_vacations()
+    for vacation in vacations:
+        print(vacation)
+
+    cursor.close()
+    conn.close()
 
 
 if __name__ == "__main__":
-    print("Recreating vacations table...")
-    create_vacations_table()
+    print("Recreating test database...")
+    recreate_test_db()
+    setup_test_tables()
 
-    print("Recreating users table...")
-    create_users_table()
+    print("\nRunning database tests first...\n")
+    exit_code = pytest.main(["-v", "-s", "tests/test_db.py"])
 
-    print("\nRunning tests...\n")
-    exit_code = pytest.main(
-        ["-v", "-s", "tests/test_vacations.py", "tests/test_users.py"])
+    if exit_code != 0:
+        sys.exit(exit_code)  # Stop execution if database setup fails
+
+    print("\nRunning all other tests...\n")
+    exit_code = pytest.main(["-v", "-s", "tests"])
 
     if exit_code != 0:
         sys.exit(exit_code)  # Stop execution if tests fail
 
-    # Recreate vacations table again to restore data after tests
     print("Restoring vacations data...")
     create_vacations_table()
 
-    show_users()
-    show_likes()
-    show_countries()
-    show_roles()
-    show_vacations()
+    show_test_data()
 
     print("\nAll tests passed!")
