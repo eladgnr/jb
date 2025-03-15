@@ -8,22 +8,25 @@ Built using:
 - **PostgreSQL** for database management
 - **pytest** for unit testing
 
-## Setup Instructions
+# please make sure to complete the following steps
 
-### 🔹 1. Install Dependencies
-bash
-pip install -r requirements.txtEnsure PostgreSQL
 
-sql
+1. bash
+pip install -r requirements.txt
+
+2. sql
 Ensure PostgreSQL is running. Then, create the test database:
 CREATE DATABASE test_db;
 GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;
 
-bash
+3. bash
 python main.py
+
+# for running only tests
 pytest
 
 
+# my project structure
 Project
 ├── src
 │   ├── dal          # Data Access Layer (Database)
