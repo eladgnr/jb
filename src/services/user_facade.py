@@ -1,69 +1,27 @@
-from ..dal.db_conn import get_connection  # Fixed import
+from src.services.user_service import UserService
+from src.dal.db_conn import get_connection
 
 
-def create_user(first_name, last_name, email, password, job_id):
-    if email_exists(email):
-        raise ValueError("Email already exists.")
+class UserFacade:
+    def __init__(self):
+        self.user_service = UserService(
+            get_connection())
 
-    if not all([first_name, last_name, email, password, job_id]):
-        raise ValueError("All fields are required.")
+    def register_user(self, admin_id, first_name, last_name, email, password, job_id):
+        """Facade method to create a user with admin validation."""
+        return self.user_service.register_user(admin_id, first_name, last_name, email, password, job_id)
 
-    if len(password) < 4:
-        raise ValueError("Password must be at least 4 characters long.")
+    def login_user(self, email, password):
+        """Facade method for user authentication."""
+        user = self.user_service.fetch_user_by_email(email)
+        if user and user["password"] == password:
+            return user
+        raise ValueError("Invalid email or password.")
 
-    try:
-        conn = get_connection()
-        if conn is not None:
-            cur = conn.cursor()
-            cur.execute("""
-                INSERT INTO users (first_name, last_name, email, password, job_id) 
-                VALUES (%s, %s, %s, %s, %s)
-            """, (first_name, last_name, email, password, job_id))
-            conn.commit()
-            cur.close()
-            conn.close()
-            print("User created successfully.")
-    except Exception as e:
-        print(f"Database error: {e}")
+    def get_user(self, user_id):
+        """Facade method to fetch user details."""
+        return self.user_service.fetch_user(user_id)
 
-
-def email_exists(email):
-    try:
-        conn = get_connection()
-        if conn is not None:
-            cur = conn.cursor()
-            cur.execute(
-                "SELECT COUNT(*) FROM users WHERE email = %s", (email,))
-            count = cur.fetchone()[0]
-            cur.close()
-            conn.close()
-            return count > 0
-    except Exception as e:
-        print(f"Database error: {e}")
-        return False
-
-
-def login_user(email, password):
-    if not email or not password:
-        raise ValueError("Email and password are required.")
-
-    if len(password) < 4:
-        raise ValueError("Password must be at least 4 characters long.")
-
-    try:
-        conn = get_connection()
-        if conn is not None:
-            cur = conn.cursor()
-            cur.execute(
-                "SELECT * FROM users WHERE email = %s AND password = %s", (email, password))
-            user = cur.fetchone()
-            cur.close()
-            conn.close()
-            if user:
-                print("Login successful.")
-                return user
-            else:
-                raise ValueError("Invalid email or password.")
-    except Exception as e:
-        print(f"Database error: {e}")
-        return None
+    def delete_user(self, user_id):
+        """Facade method to remove a user."""
+        return self.user_service.delete_user(user_id)

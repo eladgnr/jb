@@ -1,4 +1,4 @@
-from src.dal.db_conn import get_connection  # Works with direct execution
+from src.dal.db_conn import get_connection
 
 
 def get_all_likes():

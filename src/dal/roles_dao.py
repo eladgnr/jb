@@ -24,7 +24,7 @@ def get_role_by_id(role_id):
         role = cur.fetchone()
         cur.close()
         conn.close()
-        return role  # Returns None if no role found
+        return role
     return None
 
 
@@ -43,8 +43,7 @@ def create_role(role_name):
             conn.commit()
             return role_id
         except psycopg2.errors.UniqueViolation:
-            conn.rollback()  # Prevent database locks
-            # Ensure test catches this
+            conn.rollback() 
             raise ValueError(f"Role '{role_name}' already exists.")
         finally:
             cur.close()

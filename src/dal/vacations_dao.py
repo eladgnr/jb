@@ -1,6 +1,4 @@
-# Ensure DB connection is properly imported
 from src.dal.db_conn import get_connection
-
 
 def create_vacations_table():
     conn = get_connection()

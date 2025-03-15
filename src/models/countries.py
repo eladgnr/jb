@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Sequence
-from .base import Base  # Import Base from base.py
+from .base import Base
 
 
 class Country(Base):

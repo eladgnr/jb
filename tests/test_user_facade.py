@@ -1,29 +1,25 @@
-import sys
-import os
-import unittest
-from src.services.user_facade import create_user, login_user
-
-# Ensure the `src` directory is in the path
-sys.path.insert(0, os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', 'src')))
+from unittest.mock import MagicMock
+from src.services.user_facade import UserFacade
 
 
-class TestUserFacade(unittest.TestCase):
+def test_create_user():
+    mock_service = MagicMock()
+    facade = UserFacade()
+    facade.user_service = mock_service
 
-    def test_create_user(self):
-        try:
-            create_user('Alice', 'Wonderland',
-                        'alice@example.com', 'password123', 1)
-        except ValueError as e:
-            self.fail(f"User creation failed: {e}")
-
-    def test_login_user(self):
-        try:
-            user = login_user('alice@example.com', 'password123')
-            self.assertIsNotNone(user, "Login failed, user not found.")
-        except ValueError as e:
-            self.fail(f"Login failed: {e}")
+    facade.register_user(2, "Alice", "Wonderland",
+                         "alice@example.com", "pass123", 1)
+    mock_service.register_user.assert_called_once()
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_login_user():
+    mock_service = MagicMock()
+    mock_service.fetch_user_by_email.return_value = {
+        "email": "alice@example.com", "password": "pass123"
+    }
+
+    facade = UserFacade()
+    facade.user_service = mock_service
+
+    user = facade.login_user("alice@example.com", "pass123")
+    assert user["email"] == "alice@example.com"

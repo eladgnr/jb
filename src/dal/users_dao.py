@@ -1,4 +1,4 @@
-from src.dal.db_conn import get_connection  # Works with direct execution
+from src.dal.db_conn import get_connection
 
 
 def get_user_by_id(user_id):
@@ -19,11 +19,11 @@ def get_all_users():
     conn = get_connection()
     if conn is not None:
         cur = conn.cursor()
-        cur.execute("SELECT * FROM users")  # Fetch all user records
+        cur.execute("SELECT * FROM users")
         users = cur.fetchall()
         cur.close()
         conn.close()
-        return users  # Returns a list of tuples
+        return users
     return []
 
 
@@ -33,7 +33,6 @@ def create_users_table():
     if conn is not None:
         cur = conn.cursor()
 
-        # Drop and recreate table (WARNING: Deletes all users permanently)
         cur.execute("DROP TABLE IF EXISTS users CASCADE")
 
         cur.execute("""
@@ -91,6 +90,21 @@ def create_user(admin_id, first_name, last_name, email, password, job_id):
         conn.close()
         return user_id  # Return the new user ID
     return None
+
+
+def delete_user(user_id):
+    """Delete a user by their ID."""
+    conn = get_connection()
+    if conn is not None:
+        cur = conn.cursor()
+        cur.execute(
+            "DELETE FROM users WHERE user_id = %s RETURNING user_id;", (user_id,))
+        deleted_user = cur.fetchone()
+        conn.commit()
+        cur.close()
+        conn.close()
+        return deleted_user is not None  # Return True if deletion was successful
+    return False
 
 
 if __name__ == "__main__":

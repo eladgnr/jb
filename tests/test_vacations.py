@@ -59,7 +59,7 @@ def test_create_vacation():
     cur.close()
     conn.close()
 
-    assert after_count == before_count + 1  # Ensure one row was added
+    assert after_count == before_count + 1
 
 
 def test_create_vacation_invalid_data():
@@ -82,10 +82,10 @@ def test_get_all_vacations_empty():
     print("Running negative test: test_get_all_vacations_empty")
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute("DELETE FROM vacations")  # Clear all data
+    cur.execute("DELETE FROM vacations")
     conn.commit()
     cur.close()
     conn.close()
 
     vacations = get_all_vacations()
-    assert vacations == []  # Should return an empty list
+    assert vacations == []

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Numeric, Date, Sequence, ForeignKey
-from .base import Base  # Import Base from base.py
+from .base import Base
 
 
 class Vacation(Base):
