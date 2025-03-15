@@ -1,21 +1,18 @@
-# Ignore the virtual environment
+# Ignore virtual environment
 venv/
-
-# Ignore compiled Python files
 *.pyc
 __pycache__/
+
+# Ignore IDE settings
+.vscode/
+.idea/
 
 # Ignore database files (if any)
 *.db
 *.sqlite3
 
-# Ignore log files and temp files
+# Ignore log files
 *.log
-*.tmp
-
-# Ignore VS Code and PyCharm settings
-.vscode/
-.idea/
 
 # Ignore pytest cache
 .pytest_cache/
