@@ -1,3 +1,18 @@
+"""
+countries_dao.py
+================
+
+This module manages database operations related to the `countries` table.
+It provides functions to fetch all countries and create the table with initial data.
+
+Functions:
+----------
+- get_all_countries() -> list:
+    Fetches all country records from the database.
+
+- create_countries_table() -> None:
+    Creates the `countries` table if it does not exist and populates it with predefined data.
+"""
 from src.dal.db_conn import get_connection
 
 
@@ -28,16 +43,16 @@ def create_countries_table():
         cur.execute("""
             INSERT INTO countries (country_name, description)
             VALUES 
-            ('Israel', 'Sunny beaches.'),
+            ('Israel', 'Sunny beaches and Jerusalem.'),
             ('Brazil', 'Home of the Amazon rainforest.'),
-            ('Canada', 'Maple syrup and vast wilderness.'),
+            ('Canada', 'Maple syrup and wilderness.'),
             ('China', 'Great Wall and rich history.'),
-            ('France', 'Eiffel Tower and fine wine.'),
-            ('Germany', 'Engineering and Oktoberfest.'),
+            ('France', 'Eiffel Tower and wine.'),
+            ('Germany', 'Engineering specialties.'),
             ('India', 'Diverse culture and Taj Mahal.'),
-            ('Japan', 'Technology and cherry blossoms.'),
-            ('South Africa', 'Wildlife and beautiful landscapes.'),
-            ('United States', 'Big cities and national parks.')
+            ('Japan', 'shusi and cherry blossoms.'),
+            ('South Africa', 'Wildlife and amazing landscapes.'),
+            ('United States', 'Big cities and grand canyons.')
             ON CONFLICT (country_name) DO NOTHING
         """)
         conn.commit()

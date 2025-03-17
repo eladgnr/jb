@@ -1,3 +1,24 @@
+"""
+This module manages database operations related to the `users` table.
+It provides functions for fetching, inserting, updating, and deleting user records.
+
+Functions:
+----------
+- get_user_by_id(user_id: int) -> dict | None:
+    Fetches a user by ID and returns it as a dictionary. Returns `None` if not found.
+
+- get_all_users() -> list:
+    Fetches all users from the database.
+
+- create_users_table() -> None:
+    Drops and recreates the `users` table, then inserts default users.
+
+- create_user(admin_id: int, first_name: str, last_name: str, email: str, password: str, job_id: int) -> int:
+    Creates a new user if the caller is an admin (`job_id=2`). Raises `PermissionError` if unauthorized.
+
+- delete_user(user_id: int) -> bool:
+    Deletes a user by ID. Returns `True` if successful, otherwise `False`.
+"""
 from src.dal.db_conn import get_connection
 
 

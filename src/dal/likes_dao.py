@@ -1,3 +1,30 @@
+"""
+likes_dao.py
+============
+
+This module manages database operations related to the `likes` table.
+It provides functions to create the table, fetch all likes, and add new likes.
+
+Functions:
+----------
+- get_all_likes() -> list:
+    Fetches all likes from the database.
+
+- create_likes_table() -> None:
+    Creates the `likes` table if it does not exist.
+
+- add_like(user_id: int, vacation_id: int) -> None:
+    Inserts a new like into the `likes` table.
+
+Usage Example:
+--------------
+>>> from src.dal.likes_dao import get_all_likes, add_like
+>>> likes = get_all_likes()
+>>> print(likes)
+
+>>> add_like(1, 3)  # User 1 likes vacation 3
+"""
+
 from src.dal.db_conn import get_connection
 
 

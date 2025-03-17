@@ -1,4 +1,25 @@
+"""
+vacations_dao.py
+================
+
+This module handles the creation and management of the `vacations` and `countries` tables.
+It provides functions for creating tables, inserting vacation data, and retrieving vacation records.
+
+Functions:
+----------
+- create_vacations_table() -> None:
+    Drops existing `vacations` and `countries` tables (if they exist),
+    recreates them, and populates them with initial data.
+
+- get_all_vacations() -> list:
+    Fetches all vacation records from the database.
+
+- create_vacation(country_id: int, description: str, start_date: str, end_date: str, price: float, image_name: str) -> int:
+    Inserts a new vacation into the database and returns the generated vacation ID.
+"""
+
 from src.dal.db_conn import get_connection
+
 
 def create_vacations_table():
     conn = get_connection()
@@ -51,14 +72,14 @@ def create_vacations_table():
             INSERT INTO vacations (country_id, description, start_date, end_date, price, image_name)
             VALUES
             (1, 'Amazing Place where most of the year is summer.', '2024-06-01', '2024-06-10', 2500, 'Jerusalem.png'),
-            (2, 'Visit the Amazon Rainforest.', '2024-07-05', '2024-07-15', 2000, 'amazon.png'),
-            (3, 'Ski trip to Whistler, Canada.', '2024-12-10', '2024-12-20', 3000, 'whistler.png'),
+            (2, 'Visit the Amazon Rainforest.', '2024-07-05', '2024-07-15', 2000, 'rainforest.png'),
+            (3, 'Ski trip to Whistler, Canada.', '2024-12-10', '2024-12-20', 3000, 'maple.png'),
             (4, 'Hike the Great Wall of China.', '2024-09-01', '2024-09-10', 1800, 'greatwall.png'),
-            (5, 'Wine tour in France.', '2024-10-01', '2024-10-10', 2200, 'paris.png'),
+            (5, 'Wine tour in France.', '2024-10-01', '2024-10-10', 2200, 'aifel_tower.png'),
             (6, 'Oktoberfest in Germany.', '2024-09-15', '2024-09-30', 1500, 'munich.png'),
             (7, 'Taj Mahal sightseeing.', '2024-11-10', '2024-11-20', 1200, 'tajmahal.png'),
-            (8, 'Cherry blossom festival.', '2024-03-15', '2024-03-25', 2000, 'tokyo.png'),
-            (9, 'Safari in South Africa.', '2024-08-10', '2024-08-20', 3200, 'kruger.png'),
+            (8, 'Cherry blossom festival.', '2024-03-15', '2024-03-25', 2000, 'shusi.png'),
+            (9, 'Safari in South Africa.', '2024-08-10', '2024-08-20', 3200, 'lion.png'),
             (10, 'Road trip in the USA.', '2024-06-10', '2024-07-10', 4000, 'route66.png')
         """)
 
