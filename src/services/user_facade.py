@@ -1,3 +1,6 @@
+"""Facade for user-related operations, providing a simplified interface 
+for interacting with the user service and data access layer."""
+
 from src.services.user_service import UserService
 from src.dal.db_conn import get_connection
 

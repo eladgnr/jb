@@ -1,3 +1,6 @@
+"""Service layer for handling user-related business logic and interactions 
+with the data access layer."""
+
 from src.dal import users_dao
 
 
